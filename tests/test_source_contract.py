@@ -13,10 +13,13 @@ class SourceContractTests(unittest.TestCase):
         records = scenario["source_records"]
         with serve(scenario) as origin:
             client = Client(origin.base_url)
-            self.assertEqual(records[0]["work"], records[1]["work"])
-            self.assertEqual(records[0]["title"], records[1]["title"])
-            self.assertNotEqual(records[0]["affiliation"], records[1]["affiliation"])
-            self.assertEqual(records[2]["related"], records[1]["work"])
+            old = records[0]["jobs"][0]
+            current = records[1]["jobs"][0]
+            accounting = records[2]["jobs"][0]
+            self.assertEqual(old["job_id"], current["job_id"])
+            self.assertNotEqual(old["restart_cnt"], current["restart_cnt"])
+            self.assertEqual(accounting["restart_cnt"], old["restart_cnt"])
+            self.assertIn("array_task_string", old)
 
     def test_every_record_has_the_declared_source_identity(self):
         scenario = load_scenario()

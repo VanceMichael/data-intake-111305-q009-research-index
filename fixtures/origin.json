@@ -1,38 +1,63 @@
 {
   "identity_fields": [
-    "provider",
-    "work",
-    "revision"
+    "cluster",
+    "source",
+    "observation"
   ],
   "source_records": [
     {
-      "provider": "index-a",
-      "work": "doi:10.synthetic/11",
-      "revision": 1,
-      "title": "样例研究",
-      "affiliation": "旧机构",
-      "kind": "preprint",
-      "cursor": "c1",
-      "updated": "2026-11-01T10:00:00Z"
+      "cluster": "science-a",
+      "source": "controller",
+      "observation": 1,
+      "jobs": [
+        {
+          "job_id": 71,
+          "submit_time": 1000,
+          "restart_cnt": 0,
+          "state": [
+            "RUNNING"
+          ],
+          "array_job_id": 71,
+          "array_task_string": "1-4"
+        }
+      ]
     },
     {
-      "provider": "index-a",
-      "work": "doi:10.synthetic/11",
-      "revision": 2,
-      "title": "样例研究",
-      "affiliation": "新机构",
-      "kind": "journal",
-      "cursor": "c2",
-      "updated": "2026-11-10T10:00:00Z"
+      "cluster": "science-a",
+      "source": "controller",
+      "observation": 2,
+      "jobs": [
+        {
+          "job_id": 71,
+          "submit_time": 1000,
+          "restart_cnt": 1,
+          "state": [
+            "PENDING"
+          ]
+        }
+      ]
     },
     {
-      "provider": "index-b",
-      "work": "preprint:p11",
-      "revision": 1,
-      "related": "doi:10.synthetic/11",
-      "affiliation": "旧机构",
-      "kind": "preprint",
-      "updated": "2026-11-02T10:00:00Z"
+      "cluster": "science-a",
+      "source": "accounting",
+      "observation": 3,
+      "jobs": [
+        {
+          "job_id": 71,
+          "submit_time": 1000,
+          "start_time": 1100,
+          "restart_cnt": 0,
+          "state": [
+            "FAILED"
+          ],
+          "steps": [
+            {
+              "step_id": "batch",
+              "exit_code": 1
+            }
+          ]
+        }
+      ]
     }
   ],
   "portal": {
@@ -43,33 +68,58 @@
       "json": {
         "items": [
           {
-            "provider": "index-a",
-            "work": "doi:10.synthetic/11",
-            "revision": 1,
-            "title": "样例研究",
-            "affiliation": "旧机构",
-            "kind": "preprint",
-            "cursor": "c1",
-            "updated": "2026-11-01T10:00:00Z"
+            "cluster": "science-a",
+            "source": "controller",
+            "observation": 1,
+            "jobs": [
+              {
+                "job_id": 71,
+                "submit_time": 1000,
+                "restart_cnt": 0,
+                "state": [
+                  "RUNNING"
+                ],
+                "array_job_id": 71,
+                "array_task_string": "1-4"
+              }
+            ]
           },
           {
-            "provider": "index-a",
-            "work": "doi:10.synthetic/11",
-            "revision": 2,
-            "title": "样例研究",
-            "affiliation": "新机构",
-            "kind": "journal",
-            "cursor": "c2",
-            "updated": "2026-11-10T10:00:00Z"
+            "cluster": "science-a",
+            "source": "controller",
+            "observation": 2,
+            "jobs": [
+              {
+                "job_id": 71,
+                "submit_time": 1000,
+                "restart_cnt": 1,
+                "state": [
+                  "PENDING"
+                ]
+              }
+            ]
           },
           {
-            "provider": "index-b",
-            "work": "preprint:p11",
-            "revision": 1,
-            "related": "doi:10.synthetic/11",
-            "affiliation": "旧机构",
-            "kind": "preprint",
-            "updated": "2026-11-02T10:00:00Z"
+            "cluster": "science-a",
+            "source": "accounting",
+            "observation": 3,
+            "jobs": [
+              {
+                "job_id": 71,
+                "submit_time": 1000,
+                "start_time": 1100,
+                "restart_cnt": 0,
+                "state": [
+                  "FAILED"
+                ],
+                "steps": [
+                  {
+                    "step_id": "batch",
+                    "exit_code": 1
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -112,14 +162,21 @@
       "json": {
         "items": [
           {
-            "provider": "index-a",
-            "work": "doi:10.synthetic/11",
-            "revision": 1,
-            "title": "样例研究",
-            "affiliation": "旧机构",
-            "kind": "preprint",
-            "cursor": "c1",
-            "updated": "2026-11-01T10:00:00Z"
+            "cluster": "science-a",
+            "source": "controller",
+            "observation": 1,
+            "jobs": [
+              {
+                "job_id": 71,
+                "submit_time": 1000,
+                "restart_cnt": 0,
+                "state": [
+                  "RUNNING"
+                ],
+                "array_job_id": 71,
+                "array_task_string": "1-4"
+              }
+            ]
           }
         ]
       }
@@ -128,14 +185,19 @@
       "json": {
         "items": [
           {
-            "provider": "index-a",
-            "work": "doi:10.synthetic/11",
-            "revision": 2,
-            "title": "样例研究",
-            "affiliation": "新机构",
-            "kind": "journal",
-            "cursor": "c2",
-            "updated": "2026-11-10T10:00:00Z"
+            "cluster": "science-a",
+            "source": "controller",
+            "observation": 2,
+            "jobs": [
+              {
+                "job_id": 71,
+                "submit_time": 1000,
+                "restart_cnt": 1,
+                "state": [
+                  "PENDING"
+                ]
+              }
+            ]
           }
         ]
       }
@@ -144,13 +206,26 @@
       "json": {
         "items": [
           {
-            "provider": "index-b",
-            "work": "preprint:p11",
-            "revision": 1,
-            "related": "doi:10.synthetic/11",
-            "affiliation": "旧机构",
-            "kind": "preprint",
-            "updated": "2026-11-02T10:00:00Z"
+            "cluster": "science-a",
+            "source": "accounting",
+            "observation": 3,
+            "jobs": [
+              {
+                "job_id": 71,
+                "submit_time": 1000,
+                "start_time": 1100,
+                "restart_cnt": 0,
+                "state": [
+                  "FAILED"
+                ],
+                "steps": [
+                  {
+                    "step_id": "batch",
+                    "exit_code": 1
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

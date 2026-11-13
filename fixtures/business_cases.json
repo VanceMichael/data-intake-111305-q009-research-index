@@ -1,17 +1,17 @@
 [
   {
-    "name": "cursor_expires",
-    "situation": "补扫与增量交错",
-    "observable": "保留未证明覆盖的区段"
+    "name": "requeue_attempt",
+    "situation": "相同逻辑作业重启后等待",
+    "observable": "旧尝试终态不覆盖新尝试"
   },
   {
-    "name": "alias_revisit",
-    "situation": "机构别名触发大量重访",
-    "observable": "定位依赖范围并避免其他机构饥饿"
+    "name": "array_placeholder",
+    "situation": "数组范围尚未物化",
+    "observable": "不凭占位项虚增启动或完成数"
   },
   {
-    "name": "work_versions",
-    "situation": "正式版与预印本分别抵达",
-    "observable": "作品关联与字段来源可解释"
+    "name": "late_accounting",
+    "situation": "账务终态晚于控制器新状态",
+    "observable": "来源并存且未结项可继续补齐"
   }
 ]
