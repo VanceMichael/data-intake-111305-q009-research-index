@@ -1,0 +1,159 @@
+{
+  "identity_fields": [
+    "provider",
+    "work",
+    "revision"
+  ],
+  "source_records": [
+    {
+      "provider": "index-a",
+      "work": "doi:10.synthetic/11",
+      "revision": 1,
+      "title": "样例研究",
+      "affiliation": "旧机构",
+      "kind": "preprint",
+      "cursor": "c1",
+      "updated": "2026-11-01T10:00:00Z"
+    },
+    {
+      "provider": "index-a",
+      "work": "doi:10.synthetic/11",
+      "revision": 2,
+      "title": "样例研究",
+      "affiliation": "新机构",
+      "kind": "journal",
+      "cursor": "c2",
+      "updated": "2026-11-10T10:00:00Z"
+    },
+    {
+      "provider": "index-b",
+      "work": "preprint:p11",
+      "revision": 1,
+      "related": "doi:10.synthetic/11",
+      "affiliation": "旧机构",
+      "kind": "preprint",
+      "updated": "2026-11-02T10:00:00Z"
+    }
+  ],
+  "portal": {
+    "csrf": "form-2026-b"
+  },
+  "routes": {
+    "/feed": {
+      "json": {
+        "items": [
+          {
+            "provider": "index-a",
+            "work": "doi:10.synthetic/11",
+            "revision": 1,
+            "title": "样例研究",
+            "affiliation": "旧机构",
+            "kind": "preprint",
+            "cursor": "c1",
+            "updated": "2026-11-01T10:00:00Z"
+          },
+          {
+            "provider": "index-a",
+            "work": "doi:10.synthetic/11",
+            "revision": 2,
+            "title": "样例研究",
+            "affiliation": "新机构",
+            "kind": "journal",
+            "cursor": "c2",
+            "updated": "2026-11-10T10:00:00Z"
+          },
+          {
+            "provider": "index-b",
+            "work": "preprint:p11",
+            "revision": 1,
+            "related": "doi:10.synthetic/11",
+            "affiliation": "旧机构",
+            "kind": "preprint",
+            "updated": "2026-11-02T10:00:00Z"
+          }
+        ]
+      },
+      "headers": {
+        "ETag": "feed-1"
+      }
+    },
+    "/rate-limited": {
+      "status": 429,
+      "headers": {
+        "Retry-After": "2"
+      },
+      "json": {
+        "error": "quota"
+      }
+    },
+    "/unstable": [
+      {
+        "status": 503,
+        "body": "temporarily unavailable"
+      },
+      {
+        "json": {
+          "items": []
+        }
+      }
+    ],
+    "/range": {
+      "body": "0123456789",
+      "range": true
+    },
+    "/range-ignored": {
+      "body": "0123456789"
+    },
+    "/truncated": {
+      "body": "partial",
+      "truncate": true
+    },
+    "/observations/1": {
+      "json": {
+        "items": [
+          {
+            "provider": "index-a",
+            "work": "doi:10.synthetic/11",
+            "revision": 1,
+            "title": "样例研究",
+            "affiliation": "旧机构",
+            "kind": "preprint",
+            "cursor": "c1",
+            "updated": "2026-11-01T10:00:00Z"
+          }
+        ]
+      }
+    },
+    "/observations/2": {
+      "json": {
+        "items": [
+          {
+            "provider": "index-a",
+            "work": "doi:10.synthetic/11",
+            "revision": 2,
+            "title": "样例研究",
+            "affiliation": "新机构",
+            "kind": "journal",
+            "cursor": "c2",
+            "updated": "2026-11-10T10:00:00Z"
+          }
+        ]
+      }
+    },
+    "/observations/3": {
+      "json": {
+        "items": [
+          {
+            "provider": "index-b",
+            "work": "preprint:p11",
+            "revision": 1,
+            "related": "doi:10.synthetic/11",
+            "affiliation": "旧机构",
+            "kind": "preprint",
+            "updated": "2026-11-02T10:00:00Z"
+          }
+        ]
+      }
+    }
+  }
+}

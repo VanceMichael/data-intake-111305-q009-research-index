@@ -1,0 +1,17 @@
+[
+  {
+    "name": "cursor_expires",
+    "situation": "补扫与增量交错",
+    "observable": "保留未证明覆盖的区段"
+  },
+  {
+    "name": "alias_revisit",
+    "situation": "机构别名触发大量重访",
+    "observable": "定位依赖范围并避免其他机构饥饿"
+  },
+  {
+    "name": "work_versions",
+    "situation": "正式版与预印本分别抵达",
+    "observable": "作品关联与字段来源可解释"
+  }
+]
