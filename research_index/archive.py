@@ -6,12 +6,21 @@ from pathlib import Path
 
 
 class Archive:
+    """只追加的来源观察库。
+
+    原始记录（bodies/captures）始终写入。业务汇合事务（ledger）失败时由调用方
+    回滚，业务库的待补记录与原始归档因此各走各的事务，互不牵连。
+    """
+
     def __init__(self, path):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.connection = sqlite3.connect(self.path, timeout=5)
+        # isolation_level=None 关闭隐式事务，原始采集的“正文+捕获”才能作为
+        # 一个真正的原子单元；显式事务由 transaction() 负责。
+        self.connection = sqlite3.connect(self.path, timeout=5, isolation_level=None)
         self.connection.row_factory = sqlite3.Row
         self.connection.execute("PRAGMA foreign_keys=ON")
+        self.connection.execute("PRAGMA busy_timeout=5000")
         self.connection.executescript("""
             CREATE TABLE IF NOT EXISTS bodies (
                 digest TEXT PRIMARY KEY,
@@ -33,8 +42,14 @@ class Archive:
 
     @contextmanager
     def transaction(self):
-        with self.connection:
+        self.connection.execute("BEGIN IMMEDIATE")
+        try:
             yield self.connection
+        except BaseException:
+            self.connection.execute("ROLLBACK")
+            raise
+        else:
+            self.connection.execute("COMMIT")
 
     def append(self, source, url, status, headers, body):
         if not isinstance(source, str) or not source.strip():

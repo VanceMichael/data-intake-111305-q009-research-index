@@ -1,6 +1,6 @@
 # 科研集群 Slurm 作业资料的控制器与账务汇合采集
 
-这是资料接收程序的基础版。它请求来源接口，保留响应状态、头部、原始内容与每次观察的时间，能够从 JSON、CSV 或门户嵌入的数据块读回来源记录。当前不生成面向业务的有效版本，也不自动执行门户提交；重复观察会分别保留，原始内容按摘要复用。
+这是资料接收程序。它请求来源接口，保留响应状态、头部、原始内容与每次观察的时间，能够从 JSON、CSV 或门户嵌入的数据块读回来源记录；随后在同一个归档上执行控制器与账务的作业资料汇合。重复观察会分别保留，原始内容按摘要复用。程序只读取来源并推导本地业务视图，不执行、取消或重新排队任何真实作业，也不自动执行门户提交。
 
 ## 运行环境
 
@@ -35,9 +35,26 @@ python3 -m research_index capture --base-url http://127.0.0.1:实际端口 --arc
 
 归档库只追加来源观察，不用最后一条响应覆盖先前响应。`archive.py` 管理原始内容及完整性，`client.py` 执行一次请求，`decoding.py` 负责来源格式解码，`origin.py` 提供协议演练。业务解释可与原始接收独立演进。
 
+## 作业资料汇合
+
+`merge.py` 在归档库上维护业务视图，原始 `captures` 表保持不变，业务表可随时重建。一次实时轮询先原子归档原始响应，再在独立事务中汇合；业务汇合失败不会损坏原始采集。
+
+```sh
+python3 -m research_index merge --base-url http://127.0.0.1:实际端口 --archive .runtime/raw.sqlite3 --source local-source --path /feed
+python3 -m research_index jobs --archive .runtime/raw.sqlite3
+python3 -m research_index pending --archive .runtime/raw.sqlite3
+python3 -m research_index resume --archive .runtime/raw.sqlite3
+```
+
+- `jobs` 按逻辑作业（`cluster`+`job_id`+`submit_time`）分组，列出重启尝试、各侧状态、组件、steps 与数组进度，可继续用 `Merge.attempt(key)` 与 `Merge.evidence(key)` 下钻到源响应。`job_id` 不是全局唯一键。
+- `pending` 列出尚欠控制器或账务依据的尝试。`resume` 重放归档后尚未解释的捕获并重算未结项，供进程重启后续跑，不重复汇合已解释的捕获。
+- 数组未展开的范围（`array_task_string`）记为占位，不计入已启动或已完成；只有物化成员逐个计数。组件与 steps 挂在所属逻辑作业下，不新增顶层作业。
+- 两侧保留各自依据，互不按到达时间覆盖；同侧终态不会被后来的非终态倒回，同侧不同终态并列保留并记为冲突。缺少一侧终态即“尚欠依据”。
+- 空响应或 `404` 只表示这次没有资料，不形成取消事件；取消事实只来自来源明确给出的 `CANCELLED`/`REVOKED` 终态。
+
 ## 开发资料
 
-来源协议见 `docs/source-protocol.md`，领域观察关系见 `tests/test_source_contract.py`。`fixtures/business_cases.json` 保存业务侧关注的交错情况及可观察口径；基础版测试验证的是原始采集和协议，不代表业务处理已经具备这些能力。所有条目、机构、文件内容和门户回执均为本地合成资料，不包含真实用户身份。
+来源协议见 `docs/source-protocol.md`，领域观察关系见 `tests/test_source_contract.py`。`fixtures/business_cases.json` 保存业务侧关注的交错情况及可观察口径；`tests/test_merge.py` 验证汇合行为。所有条目、机构、文件内容和门户回执均为本地合成资料，不包含真实用户身份。
 
 ## Wheel 分发
 

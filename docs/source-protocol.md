@@ -25,3 +25,16 @@
 ## 领域接入契约
 
 采用本地规范化的 Slurm REST 只读响应子集，source区分控制器与账务。job_id不承诺跨集群或长期唯一；restart_cnt和数组、组件、steps字段各有独立层级。模型不含真实用户、脚本或凭据。REST字段依据Slurm官方接口文档，项目输入信封固定于本地场景，不依赖在线集群版本。
+
+## 汇合口径
+
+接收器把一条响应中的每个 `cluster`/`source`/`observation` 信封记为一次来源运行，再按下述层级解释其 `jobs`：
+
+- 顶层尝试：`cluster` + 逻辑作业 + `submit_time` + `restart_cnt`。`array_job_id` 存在且不同于 `job_id`、或带 `array_task_id` 的记录是数组物化成员；`het_group_id` 存在且不同于 `job_id` 的记录是组件作业。两者都挂在所属逻辑作业下，不新建顶层尝试。缺少 `submit_time` 或 `restart_cnt` 的顶层记录记为 `identity_status=unresolved`，独立保存，不并入已知尝试。
+- 来源侧：`controller`（或 `slurmctld`）与 `accounting`（或 `slurmdbd`）各占一行，各自保存看到的状态、是否终态与首次观察时间。两侧不按到达时间互相覆盖。
+- 数组：`array_task_string` 声明的是范围，不是已启动任务。范围在成员展开前记一条 `placeholder` 成员，`materialized` 计数只统计带 `array_task_id` 的成员；物化成员的状态不影响顶层尝试的终态。
+- 下级资料：`steps`、`het` 及其它组件字段记为 `step`/`component` 明细，不参与顶层计数。
+
+“尚欠依据”指顶层尝试缺少控制器或账务任一方的终态。两侧终态相同即结项；不同则结项并记 `sides_disagree`。取消事实只由来源的 `CANCELLED`/`REVOKED` 终态产生。空响应记 `empty_observation`，`404` 等非成功响应只记接收缺口，都不改变任何尝试状态。
+
+同侧同一尝试的观察：来源自己的非终态更新替代来源自己的旧观察；已落定的终态不会被非终态倒回；同侧另外一个终态与其不同时并列保留并记 `side_state_conflict`。每条被替代的依据仍保留在 `evidence` 中，可按 `capture_id` 取回原始正文。业务表由归档重建即可复现，不依赖实时轮询与补扫的先后次序。
